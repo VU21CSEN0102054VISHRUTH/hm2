@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Child Vaccination Management System</title>
+</head>
+<body>
+    <h1>Child Vaccination Management System</h1>
+
+    <h2>Register Parent</h2>
+    <form id="registerForm">
+        Name: <input type="text" id="parentName" required><br>
+        Email: <input type="email" id="parentEmail" required><br>
+        <button type="submit">Register</button>
+    </form>
+
+    <h2>Add Child</h2>
+    <form id="addChildForm">
+        Parent Email: <input type="email" id="childParentEmail" required><br>
+        Child Name: <input type="text" id="childName" required><br>
+        Date of Birth: <input type="date" id="childDob" required><br>
+        <button type="submit">Add Child</button>
+    </form>
+
+    <h2>Schedule Appointment</h2>
+    <form id="scheduleForm">
+        Child Name: <input type="text" id="scheduleChildName" required><br>
+        Vaccine: <input type="text" id="vaccineName" required><br>
+        Date: <input type="date" id="vaccineDate" required><br>
+        <button type="submit">Schedule</button>
+    </form>
+
+    <h2>Get Appointments</h2>
+    <form id="getAppointmentsForm">
+        Child Name: <input type="text" id="getChildName" required><br>
+        <button type="submit">Get Appointments</button>
+    </form>
+    <div id="appointments"></div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const response = await fetch('/register_parent', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    name: document.getElementById('parentName').value,
+                    email: document.getElementById('parentEmail').value
+                })
+            });
+            alert(await response.json());
+        });
+
+        document.getElementById('addChildForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const response = await fetch('/add_child', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    parent_email: document.getElementById('childParentEmail').value,
+                    name: document.getElementById('childName').value,
+                    dob: document.getElementById('childDob').value
+                })
+            });
+            alert(await response.json());
+        });
+
+        document.getElementById('scheduleForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const response = await fetch('/schedule_appointment', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    child_name: document.getElementById('scheduleChildName').value,
+                    vaccine: document.getElementById('vaccineName').value,
+                    date: document.getElementById('vaccineDate').value
+                })
+            });
+            alert(await response.json());
+        });
+
+        document.getElementById('getAppointmentsForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const response = await fetch(`/get_appointments?child_name=${document.getElementById('getChildName').value}`);
+            const appointments = await response.json();
+            document.getElementById('appointments').innerText = JSON.stringify(appointments);
+        });
+    </script>
+</body>
+</html>
